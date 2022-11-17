@@ -1,5 +1,6 @@
 from dash import Dash, html, dcc, dash_table,callback
 import dash
+import dash_bootstrap_components as dbc
 import plotly.express as px
 #import pandas as pd
 import yfinance as yf
@@ -25,24 +26,19 @@ btc_df.columns = [col[0]+"-"+col[1] for col in btc_df.columns.values]
 df = px.data.tips()
 
 
-
 #figures 
 fig_line = px.line(btc_df, x='Datetime-',y='Volume-BTC-USD',markers=True)
 fig_pie = px.pie(df, values='tip', names='day',color_discrete_sequence=px.colors.qualitative.Safe)
 
 
-
-#table
-
-
 #Page Layout
-layout=html.Div(children=[
-    html.H1(children="Crypto Dashboard Example", style={'color': '#7FDBFF','fontFamily': 'Verdana','backgroundColor':'#000000','textAlign':'center'}),
+body=dbc.Container(html.Div(children=[
+    html.H1(children="Crypto Dashboard Example", style={'color': '#7FDBFF','fontFamily': 'Verdana','backgroundColor':'#000000','textAlign':'center','padding':'5px 0px'}),
     
-    html.Div(children=[
+    dbc.Row(html.Div(children=[
     
         #Left Graph - Line Plot
-        html.Div(children=[
+        dbc.Col(html.Div(children=[
             html.Div(children=[
                 dcc.Dropdown(id='crypto_dropdown', 
                             options=[{'label':'Bitcoin','value':'BTC'},
@@ -57,16 +53,14 @@ layout=html.Div(children=[
                 dcc.Graph(   
                     id='btc_line_graph',
                     figure=fig_line 
-                    #style={'width':'300px', 'height':'300px'}
                     )
                 )
-            ], style={'padding': 10, 'flex': 1}), 
+            ]
+        )), 
     
-    
-    
-    
+        
         #Right Graph - Pie Plot
-        html.Div(children=[
+        dbc.Col(html.Div(children=[
             html.Div(children=[
                 html.H2("This is an example pie graph",style={'color': '#191970','fontFamily': 'Verdana'}),
                 html.Br(),html.Br(),
@@ -82,19 +76,16 @@ layout=html.Div(children=[
                                 html.P(id="pie_info", style={'color': '#191970','fontFamily': 'Verdana'})
                             ]
                     ),
-                        
-                        ],style={'padding': 10, 'flex': 1}),
+        ]
+        )
+        ),
+    ]
+    )
+    )
         
-        
-    
-        ],style={'display': 'flex', 'flex-direction': 'row'}),
-                
-    
-    # html.Div(children=[],
-    #         style={'margin':'auto','width':'1000px','height':'450px'})
-    
-])
+]))
 
+layout=html.Div([body])
 
 # Line plot callback
 @callback(
